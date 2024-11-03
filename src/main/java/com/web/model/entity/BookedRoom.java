@@ -43,7 +43,7 @@ public class BookedRoom {
 	private int totalNumOfGuest;
 	
 	@Column(name = "code")
-	private int confirmCode;
+	private String confirmCode;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_id")

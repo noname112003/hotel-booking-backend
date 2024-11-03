@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.RandomStringUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +47,7 @@ public class Room {
 		bookedRooms.add(booking);
 		booking.setRoom(this);
 		isBooked = true;
-		int bookingCode = (int)(Math.random() * 999999999 + 1000000000);
+		String bookingCode = RandomStringUtils.randomNumeric(10);
 		booking.setConfirmCode(bookingCode);
 	}
 }
