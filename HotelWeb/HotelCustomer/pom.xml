@@ -3,17 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.hotel</groupId>
+		<artifactId>HotelWeb</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.hotel</groupId>
-	<artifactId>hotel_booking_project</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>hotel_booking_project</name>
-	<description>hotel_booking_project</description>
-	<packaging>pom</packaging>
+
+	<artifactId>HotelCustomer</artifactId>
+	<name>HotelCustomer</name>
+	<description>HotelCustomer</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -31,12 +28,16 @@
 		<java.version>17</java.version>
 	</properties>
 
+	<dependencies>
+	</dependencies>
 
-	<modules>
-		<module>HotelCommon</module>
-		<module>HotelWeb</module>
-	</modules>
-
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
