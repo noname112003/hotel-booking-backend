@@ -5,6 +5,8 @@ import com.hotel.common.entity.Role;
 import com.hotel.common.entity.User;
 import com.hotel.customer.exception.CustomerAlreadyExistsException;
 import com.hotel.customer.model.dto.request.CustomerRequest;
+import com.hotel.customer.model.dto.request.command.UpdateCustomerCommand;
+import com.hotel.customer.model.dto.response.CustomerInfo;
 import com.hotel.customer.model.dto.response.CustomerResponse;
 import com.hotel.customer.repository.CustomerRepository;
 import com.hotel.customer.security.jwt.JwtProvider;
@@ -100,6 +102,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void updateCustomer(UpdateCustomerCommand command) {
+        // Kiểm tra xem customer có tồn tại không
+        if (customerRepository.existsByEmail(command.getEmail())) {
+            // Nếu tồn tại, thực hiện cập nhật
+            customerRepository.updateCustomerByEmail(command.getName(), command.getPhoneNumber(),
+                    command.getEmail(), command.getIdentification());
+        } else {
+            throw new UsernameNotFoundException("Customer with email does not exist.");
+        }
+    }
+
+    @Override
     public Customer getCustomer(String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
@@ -107,5 +121,14 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return customer;
 
+    }
+
+    @Override
+    public CustomerInfo getCustomerInfo(String email) {
+        Customer customer = customerRepository.findByEmail(email);
+        if (customer == null) {
+            throw new UsernameNotFoundException("Customer not found!");
+        }
+        return CustomerInfo.convertDTO(customer);
     }
 }
