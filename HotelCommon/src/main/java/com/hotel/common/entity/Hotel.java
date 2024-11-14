@@ -4,6 +4,7 @@ package com.hotel.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,10 @@ public class Hotel {
 
     private String description;
 
+    private Date checkin;
+
+    private Date checkout;
+
     // Liên kết với danh sách Room
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Room> rooms;
@@ -32,5 +37,12 @@ public class Hotel {
     // Liên kết với danh sách Image
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image_hotel> images;
+
+    private Boolean parking;
+    private Boolean keep_luggage;
+    private Boolean free_wifi;
+    private Boolean laundry_service;
+    private Boolean room_service;
+
 
 }
