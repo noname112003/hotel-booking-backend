@@ -41,4 +41,11 @@ public class RoomController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateRoom(@PathVariable Long id, @RequestBody @Valid RoomRequest roomRequest) throws Exception {
+        RoomResponse roomResponse = roomService.updateRoom(id, roomRequest);
+        return new ResponseEntity<>(roomResponse, HttpStatus.OK);
+
+    }
+
 }
