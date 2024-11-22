@@ -5,8 +5,10 @@ import com.hotel.common.entity.Hotel;
 import com.hotel.common.entity.User;
 import com.hotel.user.exception.HotelNotFoundException;
 import com.hotel.user.model.dto.reponse.HotelResponse;
+import com.hotel.user.model.dto.reponse.RoomResponse;
 import com.hotel.user.model.dto.request.HotelRequest;
 import com.hotel.user.service.HotelService;
+import com.hotel.user.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 public class HotelController {
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private RoomService roomService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid HotelRequest hotelRequest, BindingResult bindingResult) throws Exception {
@@ -44,4 +49,30 @@ public class HotelController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
         }
     }
+
+    @PutMapping("/update/{hotelId}")
+    public ResponseEntity<HotelResponse> updateHotel(
+            @PathVariable Long hotelId,
+            @RequestBody @Valid HotelRequest hotelRequest) {
+
+        HotelResponse updatedHotel = hotelService.updateHotel(hotelId, hotelRequest);
+        return ResponseEntity.ok(updatedHotel);
+    }
+
+    @GetMapping("/{hotelId}/rooms")
+    public ResponseEntity<?> getRoomsByHotelId(@PathVariable Long hotelId) {
+
+        List<RoomResponse> rooms = roomService.getRoomsByHotelId(hotelId);
+        return ResponseEntity.ok(rooms);
+
+    }
+
+    @DeleteMapping("/{hotelId}/rooms/delete/{roomId}")
+    public ResponseEntity<?> deleteRoomFromHotel(@PathVariable("hotelId") Long hotelId, @PathVariable("roomId") Long roomId) {
+        hotelService.deleteRoomFromHotel(hotelId, roomId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Trả về 204 nếu xóa thành công
+    }
+
+
+
 }
