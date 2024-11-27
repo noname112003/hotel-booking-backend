@@ -9,6 +9,7 @@ import com.hotel.user.model.dto.reponse.RoomResponse;
 import com.hotel.user.model.dto.request.HotelRequest;
 import com.hotel.user.service.HotelService;
 import com.hotel.user.service.RoomService;
+import com.hotel.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,8 @@ public class HotelController {
     private HotelService hotelService;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid HotelRequest hotelRequest, BindingResult bindingResult) throws Exception {
@@ -49,6 +52,19 @@ public class HotelController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
         }
     }
+
+    @GetMapping("/findall/{email}")
+    public ResponseEntity<?> getHotelsByID(@PathVariable String email) {
+        User user = userService.getUser(email);
+        try {
+            List<HotelResponse> hotelResponses = hotelService.getAllHotels(user.getId());
+            return ResponseEntity.ok(hotelResponses);
+        } catch (Exception ex) {
+            // Xử lý lỗi không mong đợi
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
+        }
+    }
+
 
     @PutMapping("/update/{hotelId}")
     public ResponseEntity<HotelResponse> updateHotel(
