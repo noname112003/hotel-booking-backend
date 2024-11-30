@@ -80,7 +80,7 @@ public class HotelController {
     }
 
     @GetMapping("/{hotelId}/rooms")
-    public ResponseEntity<?> getRoomsByHotelId(@PathVariable Long hotelId,
+    public ResponseEntity<?> getRoomsByHotelIdAndKeyword(@PathVariable Long hotelId,
                                                @RequestParam(value = "pageNum", required = false, defaultValue = "0") int pageNum,
                                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                                @RequestParam(value = "keyword", required = false) String keyword) {

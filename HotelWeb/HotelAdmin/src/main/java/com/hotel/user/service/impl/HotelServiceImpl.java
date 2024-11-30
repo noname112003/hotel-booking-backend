@@ -9,14 +9,14 @@ import com.hotel.user.exception.RoomNotFoundException;
 import com.hotel.user.model.dto.reponse.HotelResponse;
 import com.hotel.user.model.dto.request.HotelRequest;
 import com.hotel.user.repository.HotelRepository;
-import com.hotel.user.repository.ImageHotelRepository;
 import com.hotel.user.repository.RoomRepository;
 import com.hotel.user.service.HotelService;
 import com.hotel.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +28,6 @@ public class HotelServiceImpl implements HotelService {
     private HotelRepository hotelRepository;
     @Autowired
     private RoomRepository roomRepository;
-
-    @Autowired
-    private ImageHotelRepository imageHotelRepository;
 
     @Override
     public HotelResponse registerHotel(HotelRequest hotelRequest){
@@ -70,16 +67,20 @@ public class HotelServiceImpl implements HotelService {
         return new HotelResponse().convertToDTO(hotel);
 
     }
-    @Override
-    public List<HotelResponse> getAllHotels(Long userId) {
-        List<Hotel> hotels = hotelRepository.findByUserId(userId);
 
+    @Override
+    public Page<HotelResponse> getAllHotels_v2(Long userId, String keyword, Pageable pageable) {
+        Page<Hotel> hotels;
+        if (keyword != null) {
+            hotels = hotelRepository.findByUserIdAndKeyword(userId, keyword, pageable);
+        } else {
+            hotels = hotelRepository.findByUserId(userId, pageable);
+        }
         if (hotels.isEmpty()) {
             throw new HotelNotFoundException("No hotels found for user with ID: " + userId);
         }
-        return hotels.stream()
-                .map(hotel -> new HotelResponse().convertToDTO(hotel))
-                .toList();
+
+        return hotels.map(hotel -> new HotelResponse().convertToDTO(hotel));
     }
     @Override
     public HotelResponse updateHotel(Long hotelId, HotelRequest hotelRequest) {
@@ -101,14 +102,12 @@ public class HotelServiceImpl implements HotelService {
 
 
         if (hotelRequest.getPaths() != null) {
-            // Xóa ảnh
-            imageHotelRepository.deleteAllInBatch(hotel.getImages());
 
             List<Image_hotel> newImages = hotelRequest.getPaths().stream()
                     .map(path -> Image_hotel.builder().path(path).hotel(hotel).build())
                     .toList();
 
-            hotel.getImages().addAll(newImages);
+            hotel.setImages(newImages);
         }
 
         // Lưu thông tin hotel sau khi cập nhật
