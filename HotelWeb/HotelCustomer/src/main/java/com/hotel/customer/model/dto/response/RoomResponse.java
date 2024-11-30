@@ -1,4 +1,4 @@
-package com.hotel.user.model.dto.reponse;
+package com.hotel.customer.model.dto.response;
 
 import com.hotel.common.entity.Room;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor

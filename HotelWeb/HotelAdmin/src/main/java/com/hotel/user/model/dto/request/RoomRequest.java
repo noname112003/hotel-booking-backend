@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class RoomRequest {
+    private Long number;
     private String roomType;
     private String description;
     private double price;

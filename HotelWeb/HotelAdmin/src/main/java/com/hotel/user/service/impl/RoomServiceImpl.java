@@ -2,6 +2,7 @@ package com.hotel.user.service.impl;
 
 
 import com.hotel.common.entity.Hotel;
+import com.hotel.common.entity.Image_hotel;
 import com.hotel.common.entity.Image_room;
 import com.hotel.common.entity.Room;
 import com.hotel.user.exception.RoomNotFoundException;
@@ -11,10 +12,10 @@ import com.hotel.user.repository.HotelRepository;
 import com.hotel.user.repository.RoomRepository;
 import com.hotel.user.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -27,12 +28,21 @@ public class RoomServiceImpl implements RoomService {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new IllegalStateException("Hotel with id " + hotelId + " not found"));
         Room room = Room.builder()
+                .number(roomRequest.getNumber())
                 .roomType(roomRequest.getRoomType())
                 .description(roomRequest.getDescription())
                 .price(roomRequest.getPrice())
                 .hotel(hotel)
                 .build();
-
+        if (roomRequest.getPaths() != null) {
+            List<Image_room> images = roomRequest.getPaths().stream()
+                    .map(path -> Image_room.builder()
+                            .path(path)
+                            .room(room) // Gắn hotel vào từng ảnh
+                            .build())
+                    .toList();
+            room.setImages(images);
+        }
         return new RoomResponse().convertToDTO(roomRepository.save(room));
     }
     @Override
@@ -42,17 +52,18 @@ public class RoomServiceImpl implements RoomService {
 
         return new RoomResponse().convertToDTO(room); // Chuyển đổi Room entity thành RoomResponse DTO
     }
-
-    public List<RoomResponse> getRoomsByHotelId(Long hotelId) {
-        List<Room> rooms = roomRepository.findByHotelId(hotelId);
-
+    @Override
+    public Page<RoomResponse> getRoomsByHotelIdAndKeyword(Long hotelId, String keyword, Pageable pageable) {
+        Page<Room> rooms;
+        if (keyword != null) {
+            rooms = roomRepository.findByHotelIdAndKeyword(hotelId, keyword, pageable);
+        } else {
+            rooms = roomRepository.findByHotelId(hotelId, pageable);
+        }
         if (rooms.isEmpty()) {
             throw new RoomNotFoundException("No rooms found for hotel with ID: " + hotelId);
         }
-
-        return rooms.stream()
-                .map(room -> new RoomResponse().convertToDTO(room))
-                .toList();
+        return rooms.map(room -> new RoomResponse().convertToDTO(room));
     }
     @Override
     public RoomResponse updateRoom(Long roomId, RoomRequest roomRequest) {
@@ -61,6 +72,7 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new RoomNotFoundException("Room not found with ID: " + roomId));
 
         // Cập nhật thông tin từ RoomRequest
+        room.setNumber(roomRequest.getNumber());
         room.setRoomType(roomRequest.getRoomType());
         room.setDescription(roomRequest.getDescription());
         room.setPrice(roomRequest.getPrice());
