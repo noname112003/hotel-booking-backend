@@ -84,9 +84,13 @@ public class WebSecurityConfig {
                         (auth)->auth
                                 .requestMatchers("auth/**")
                                 .permitAll()
-
+                                .requestMatchers("/hotel/**")
+                                .permitAll()
+                                .requestMatchers("/hotel/update/**")
+                                .authenticated()
+                                .requestMatchers("/hotel/register")
+                                .authenticated()
                                 .anyRequest().authenticated()
-
                 )
 
 

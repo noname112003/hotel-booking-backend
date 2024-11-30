@@ -26,9 +26,13 @@ public class Hotel {
 
     private String description;
 
-    private Date checkin;
+    private String checkin;
 
-    private Date checkout;
+    private String checkout;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false) // Tên cột trong bảng Hotel
+    private User user;
 
     // Liên kết với danh sách Room
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
