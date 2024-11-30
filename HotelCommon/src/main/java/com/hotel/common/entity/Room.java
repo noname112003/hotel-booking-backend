@@ -24,6 +24,8 @@ public class Room {
 
     private double price;
 
+    private Long number;
+
     // Liên kết với Hotel
     @ManyToOne
     @JoinColumn(name = "hotel_id")

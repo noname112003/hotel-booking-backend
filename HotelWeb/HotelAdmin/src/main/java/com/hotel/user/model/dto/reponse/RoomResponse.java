@@ -1,10 +1,7 @@
 package com.hotel.user.model.dto.reponse;
 
 import com.hotel.common.entity.Room;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +10,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 @Builder
+@Getter
 public class RoomResponse {
     private Long id;
     private Long number;

@@ -24,6 +24,7 @@ public class Hotel {
 
     private String address;
 
+    @Column(length = 2000)
     private String description;
 
     private String checkin;
