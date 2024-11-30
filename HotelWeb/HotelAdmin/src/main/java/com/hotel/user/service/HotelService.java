@@ -14,5 +14,5 @@ public interface HotelService {
     Page<HotelResponse> getAllHotels_v2(Long userId, String keyword, Pageable pageable);
     HotelResponse updateHotel(Long hotelId, HotelRequest hotelRequest);
     void deleteRoomFromHotel(Long hotelId, Long roomId);
-
+    List<HotelResponse> getAllHotels(Long userId);
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long>, CrudRepository<Hotel, Long> {
     Page<Hotel> findByUserId(Long userId, Pageable pageable);
+    List<Hotel> findByUserId(Long userId);
     // Truy vấn tìm kiếm theo userId và keyword
     @Query("SELECT h FROM Hotel h WHERE h.user.id = :userId AND " +
             "(LOWER(h.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +

@@ -83,6 +83,17 @@ public class HotelServiceImpl implements HotelService {
         return hotels.map(hotel -> new HotelResponse().convertToDTO(hotel));
     }
     @Override
+    public List<HotelResponse> getAllHotels(Long userId) {
+        List<Hotel> hotels = hotelRepository.findByUserId(userId);
+
+        if (hotels.isEmpty()) {
+            throw new HotelNotFoundException("No hotels found for user with ID: " + userId);
+        }
+        return hotels.stream()
+                .map(hotel -> new HotelResponse().convertToDTO(hotel))
+                .toList();
+    }
+    @Override
     public HotelResponse updateHotel(Long hotelId, HotelRequest hotelRequest) {
         // Tìm hotel theo ID
         Hotel hotel = hotelRepository.findById(hotelId)
