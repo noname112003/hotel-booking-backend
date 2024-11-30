@@ -9,6 +9,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, CrudRepository<Room, Long> {
     @Query("SELECT r FROM Room r WHERE r.hotel.id = :hotelId AND " +
@@ -18,4 +20,14 @@ public interface RoomRepository extends JpaRepository<Room, Long>, CrudRepositor
                                        @Param("keyword") String keyword,
                                        Pageable pageable);
     Page<Room> findByHotelId(Long hotelId, Pageable pageable);
+    @Query("SELECT r FROM Room r " +
+            "WHERE r.hotel.id = :hotelId " +
+            "AND r.id NOT IN (" +
+            "   SELECT br.room.id FROM Booked_room br " +
+            "   WHERE br.checkinDate < :checkout AND br.checkoutDate > :checkin" +
+            ")")
+    Page<Room> findAvailableRoomsByHotelAndDate(@Param("hotelId") Long hotelId,
+                                                @Param("checkin") Date checkin,
+                                                @Param("checkout") Date checkout,
+                                                Pageable pageable);
 }

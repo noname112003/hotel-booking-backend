@@ -7,5 +7,5 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 public interface BookedRoomService {
-    public Booked_room bookRoom(Long roomId, Long customerId, Date checkinDate, Date checkoutDate) throws MessagingException, UnsupportedEncodingException;
+    Booked_room bookRoom(Long roomId, Long customerId, Date checkinDate, Date checkoutDate) throws MessagingException, UnsupportedEncodingException;
 }
