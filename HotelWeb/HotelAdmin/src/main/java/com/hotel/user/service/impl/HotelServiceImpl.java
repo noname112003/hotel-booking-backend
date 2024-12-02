@@ -9,6 +9,7 @@ import com.hotel.user.exception.RoomNotFoundException;
 import com.hotel.user.model.dto.reponse.HotelResponse;
 import com.hotel.user.model.dto.request.HotelRequest;
 import com.hotel.user.repository.HotelRepository;
+import com.hotel.user.repository.ImageHotelRepository;
 import com.hotel.user.repository.RoomRepository;
 import com.hotel.user.service.HotelService;
 import com.hotel.user.service.UserService;
@@ -28,6 +29,8 @@ public class HotelServiceImpl implements HotelService {
     private HotelRepository hotelRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private ImageHotelRepository imageHotelRepository;
 
     @Override
     public HotelResponse registerHotel(HotelRequest hotelRequest){
@@ -113,12 +116,14 @@ public class HotelServiceImpl implements HotelService {
 
 
         if (hotelRequest.getPaths() != null) {
+            // Xóa ảnh
+            imageHotelRepository.deleteAllInBatch(hotel.getImages());
 
             List<Image_hotel> newImages = hotelRequest.getPaths().stream()
                     .map(path -> Image_hotel.builder().path(path).hotel(hotel).build())
                     .toList();
 
-            hotel.setImages(newImages);
+            hotel.getImages().addAll(newImages);
         }
 
         // Lưu thông tin hotel sau khi cập nhật

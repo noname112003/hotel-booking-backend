@@ -6,9 +6,11 @@ import com.hotel.common.entity.Image_hotel;
 import com.hotel.common.entity.Image_room;
 import com.hotel.common.entity.Room;
 import com.hotel.user.exception.RoomNotFoundException;
+import com.hotel.user.model.dto.reponse.RoomDTO;
 import com.hotel.user.model.dto.reponse.RoomResponse;
 import com.hotel.user.model.dto.request.RoomRequest;
 import com.hotel.user.repository.HotelRepository;
+import com.hotel.user.repository.ImageRoomRepository;
 import com.hotel.user.repository.RoomRepository;
 import com.hotel.user.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class RoomServiceImpl implements RoomService {
     private HotelRepository hotelRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private ImageRoomRepository imageRoomRepository;
+
     @Override
     public RoomResponse createRoom(Long hotelId, RoomRequest roomRequest){
         Hotel hotel = hotelRepository.findById(hotelId)
@@ -53,17 +58,17 @@ public class RoomServiceImpl implements RoomService {
         return new RoomResponse().convertToDTO(room); // Chuyển đổi Room entity thành RoomResponse DTO
     }
     @Override
-    public Page<RoomResponse> getRoomsByHotelIdAndKeyword(Long hotelId, String keyword, Pageable pageable) {
+    public Page<RoomDTO> getRoomsByHotelIdAndKeyword(List<Long> hotelIds, String keyword, Pageable pageable) {
         Page<Room> rooms;
-        if (keyword != null) {
-            rooms = roomRepository.findByHotelIdAndKeyword(hotelId, keyword, pageable);
+        if (keyword != null || keyword.length() > 0) {
+            rooms = roomRepository.findByHotelIdAndKeyword(hotelIds, keyword, pageable);
         } else {
-            rooms = roomRepository.findByHotelId(hotelId, pageable);
+            rooms = roomRepository.findByHotelIdIn(hotelIds, pageable);
         }
         if (rooms.isEmpty()) {
-            throw new RoomNotFoundException("No rooms found for hotel with ID: " + hotelId);
+            throw new RoomNotFoundException("No rooms found for hotel with ID: " );
         }
-        return rooms.map(room -> new RoomResponse().convertToDTO(room));
+        return rooms.map(room -> new RoomDTO().convertToDTO(room));
     }
     @Override
     public RoomResponse updateRoom(Long roomId, RoomRequest roomRequest) {
@@ -79,12 +84,14 @@ public class RoomServiceImpl implements RoomService {
 
         // Cập nhật danh sách hình ảnh nếu có
         if (roomRequest.getPaths() != null) {
+            imageRoomRepository.deleteAllInBatch(room.getImages());
+
             // Tạo danh sách mới các hình ảnh từ các đường dẫn trong roomRequest
             List<Image_room> newImages = roomRequest.getPaths().stream()
                     .map(path -> Image_room.builder().path(path).room(room).build())
                     .toList();
 
-            room.setImages(newImages); // Cập nhật danh sách hình ảnh mới
+            room.getImages().addAll(newImages); // Cập nhật danh sách hình ảnh mới
         }
 
         // Lưu thông tin phòng sau khi cập nhật
@@ -92,6 +99,11 @@ public class RoomServiceImpl implements RoomService {
 
         // Trả về RoomResponse
         return new RoomResponse().convertToDTO(updatedRoom);
+    }
+
+    @Override
+    public Page<Room> getRoomsByHotelIds(List<Long> hotelIds, Pageable pageable) {
+        return roomRepository.findByHotelIdIn(hotelIds, pageable);
     }
 
 }

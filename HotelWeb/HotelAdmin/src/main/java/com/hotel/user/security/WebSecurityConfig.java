@@ -90,6 +90,12 @@ public class WebSecurityConfig {
                                 .authenticated()
                                 .requestMatchers("/hotel/register")
                                 .authenticated()
+                                .requestMatchers("/rooms/**")
+                                .permitAll()
+                                .requestMatchers("/rooms/create/**")
+                                .authenticated()
+                                .requestMatchers("/rooms/update/**")
+                                .authenticated()
                                 .anyRequest().authenticated()
                 )
 
