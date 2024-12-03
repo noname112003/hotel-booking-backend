@@ -5,8 +5,10 @@ import com.hotel.common.entity.Hotel;
 import com.hotel.common.entity.User;
 import com.hotel.user.exception.HotelNotFoundException;
 import com.hotel.user.model.dto.reponse.HotelResponse;
+import com.hotel.user.model.dto.reponse.RoomDTO;
 import com.hotel.user.model.dto.reponse.RoomResponse;
 import com.hotel.user.model.dto.request.HotelRequest;
+import com.hotel.user.model.dto.request.RoomPaging;
 import com.hotel.user.service.HotelService;
 import com.hotel.user.service.RoomService;
 import com.hotel.user.service.UserService;
@@ -79,15 +81,14 @@ public class HotelController {
         return ResponseEntity.ok(updatedHotel);
     }
 
-    @GetMapping("/{hotelId}/rooms")
-    public ResponseEntity<?> getRoomsByHotelIdAndKeyword(@PathVariable Long hotelId,
+    @PostMapping("/rooms")
+    public ResponseEntity<?> getRoomsByHotelIdAndKeyword(@RequestBody RoomPaging command,
                                                @RequestParam(value = "pageNum", required = false, defaultValue = "0") int pageNum,
-                                               @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                                               @RequestParam(value = "keyword", required = false) String keyword) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "price"));
-        Page<RoomResponse> rooms = roomService.getRoomsByHotelIdAndKeyword(hotelId, keyword, pageable);
+                                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
+                                               ) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.ASC, "number"));
+        Page<RoomDTO> rooms = roomService.getRoomsByHotelIdAndKeyword(command.getHotelIds(), command.getKeyword(), pageable);
         return ResponseEntity.ok(rooms);
-
     }
 
     @DeleteMapping("/{hotelId}/rooms/delete/{roomId}")
