@@ -15,4 +15,5 @@ public interface RoomService {
     Page<RoomDTO> getRoomsByHotelIdAndKeyword(List<Long> hotelIds, String keyword, Pageable pageable);
     RoomResponse updateRoom(Long roomId, RoomRequest roomRequest);
     Page<Room> getRoomsByHotelIds(List<Long> hotelIds, Pageable pageable);
+    List<RoomResponse> getRoomsByHotelId(Long hotelId);
 }
