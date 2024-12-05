@@ -18,4 +18,6 @@ public interface BookedRoomRepository extends JpaRepository<Booked_room, Long> {
     List<Booked_room> findConflictingBookings(@Param("roomId") Long roomId,
                                               @Param("checkinDate") Date checkinDate,
                                               @Param("checkoutDate") Date checkoutDate);
+    @Query("SELECT br FROM Booked_room br WHERE br.customer.id = :userId")
+    List<Booked_room> findByCustomerId(@Param("userId") Long userId);
 }
