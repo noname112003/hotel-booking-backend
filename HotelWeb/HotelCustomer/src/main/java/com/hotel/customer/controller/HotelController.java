@@ -9,26 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
 @RestController
-@RequestMapping("/hotel")
+@RequestMapping("/api/hotel")
 public class HotelController {
     @Autowired
     private HotelService hotelService;
     @Autowired
     private RoomService roomService;
     // tìm kiếm hotel dựa vào keyword và còn phòng trống vào khoảng thời gian checkin checkout
-    @GetMapping("/search")
+    @GetMapping("/findall")
     public ResponseEntity<Page<HotelResponse>> searchHotels(
             @RequestParam(value = "checkin", required = false) Date checkin,
             @RequestParam(value = "checkout", required = false) Date checkout,
             @RequestParam(value = "keyword", required = false) String keyword,
-            Pageable pageable) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+            ) {
         // Gọi service để tìm kiếm khách sạn theo điều kiện checkin, checkout và từ khóa tìm kiếm
+        Pageable pageable = PageRequest.of(page, size);
         Page<HotelResponse> hotels = hotelService.searchHotelsWithAvailableRooms(checkin, checkout, keyword, pageable);
         return ResponseEntity.ok(hotels);
     }
@@ -44,6 +48,16 @@ public class HotelController {
         return ResponseEntity.ok(rooms);
     }
 
+    @GetMapping("/destination")
+    public ResponseEntity<Page<HotelResponse>> getDestinations(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<HotelResponse> destinations = hotelService.searchDestinations(keyword, pageable);
+        return ResponseEntity.ok(destinations);
+    }
 
 
 }
