@@ -147,6 +147,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             BigDecimal totalCost = bookedRoom.getRoom().getPrice().multiply(BigDecimal.valueOf(numberOfDays));
 
             return HistoryBooking.builder()
+                    .id(bookedRoom.getId())
                     .nameHotel(bookedRoom.getRoom().getHotel().getName())
                     .roomType(bookedRoom.getRoom().getRoomType())
                     .checkinDate(bookedRoom.getCheckinDate())
