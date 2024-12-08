@@ -98,6 +98,10 @@ public class WebSecurityConfig {
                                 .authenticated()
                                 .requestMatchers("/admin/profile/**")
                                 .authenticated()
+                                .requestMatchers("/api/admin/booking/**")
+                                .permitAll()
+                                .requestMatchers("/api/admin/booking/booked-rooms/**")
+                                .authenticated()
                                 .anyRequest().authenticated()
                 )
 
