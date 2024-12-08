@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -142,9 +144,15 @@ public class BookedRoomServiceImpl implements BookedRoomService {
         List<Booked_room> bookedRooms = bookedRoomRepository.findByCustomerId(userId);
 
         return bookedRooms.stream().map(bookedRoom -> {
-            long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
-            long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
-            BigDecimal totalCost = bookedRoom.getRoom().getPrice().multiply(BigDecimal.valueOf(numberOfDays));
+            // Tính số ngày đã ở
+            long daysStayed = ChronoUnit.DAYS.between(
+                    bookedRoom.getCheckinDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                    bookedRoom.getCheckoutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            );
+
+            // Tính tổng chi phí
+            BigDecimal totalCost = bookedRoom.getRoom().getPrice()
+                    .multiply(BigDecimal.valueOf(daysStayed));
 
             return HistoryBooking.builder()
                     .id(bookedRoom.getId())
