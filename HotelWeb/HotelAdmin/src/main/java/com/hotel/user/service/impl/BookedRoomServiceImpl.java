@@ -38,8 +38,8 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             );
 
             // Tính tổng chi phí
-            BigDecimal totalCost = bookedRoom.getRoom().getPrice()
-                    .multiply(BigDecimal.valueOf(daysStayed));
+            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(daysStayed));
 
             return BookedRoomDTO.builder()
                     .id(bookedRoom.getId())
