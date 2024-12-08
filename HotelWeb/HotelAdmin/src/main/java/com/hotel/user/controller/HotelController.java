@@ -71,6 +71,10 @@ public class HotelController {
         }
     }
 
+    @GetMapping("/get-all-room/{hotelId}")
+    public List<RoomResponse> getRoomsByHotelId(@PathVariable Long hotelId) {
+        return roomService.getRoomsByHotelId(hotelId);
+    }
 
     @PutMapping("/update/{hotelId}")
     public ResponseEntity<HotelResponse> updateHotel(

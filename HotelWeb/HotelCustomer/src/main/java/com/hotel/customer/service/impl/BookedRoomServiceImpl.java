@@ -144,12 +144,14 @@ public class BookedRoomServiceImpl implements BookedRoomService {
         return bookedRooms.stream().map(bookedRoom -> {
             long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
             long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
-            BigDecimal totalCost = bookedRoom.getRoom().getPrice().multiply(BigDecimal.valueOf(numberOfDays));
+            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(numberOfDays));
 
             return HistoryBooking.builder()
                     .id(bookedRoom.getId())
                     .nameHotel(bookedRoom.getRoom().getHotel().getName())
                     .roomType(bookedRoom.getRoom().getRoomType())
+                    .number(bookedRoom.getRoom().getNumber())
                     .checkinDate(bookedRoom.getCheckinDate())
                     .checkoutDate(bookedRoom.getCheckoutDate())
                     .bookingDate(bookedRoom.getBookingDate())

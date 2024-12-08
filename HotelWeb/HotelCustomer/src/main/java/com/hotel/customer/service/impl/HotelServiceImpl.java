@@ -19,9 +19,20 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Page<HotelResponse> searchHotelsWithAvailableRooms(Date checkin, Date checkout, String keyword, Pageable pageable) {
-        Page<Hotel> hotels = hotelRepository.findHotelsWithAvailableRoomsAndKeyword(checkin, checkout, keyword, pageable);
+        Page<Hotel> hotels;
+        if (checkin == null && checkout == null && (keyword == null || keyword.isEmpty())) {
+            hotels = hotelRepository.findHotels(pageable);
+        } else {
+            hotels = hotelRepository.findHotelsWithAvailableRoomsAndKeyword(checkin, checkout, keyword, pageable);
+        }
 
         // Chuyển đổi danh sách khách sạn từ Entity sang DTO
+        return hotels.map(hotel -> new HotelResponse().convertToDTO(hotel));
+    }
+
+    @Override
+    public Page<HotelResponse> searchDestinations(String keyword, Pageable pageable) {
+        Page<Hotel> hotels = hotelRepository.findHotelsByAddress(keyword, pageable);
         return hotels.map(hotel -> new HotelResponse().convertToDTO(hotel));
     }
 }
