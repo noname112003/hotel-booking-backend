@@ -96,6 +96,8 @@ public class WebSecurityConfig {
                                 .authenticated()
                                 .requestMatchers("/rooms/update/**")
                                 .authenticated()
+                                .requestMatchers("/admin/profile/**")
+                                .authenticated()
                                 .anyRequest().authenticated()
                 )
 

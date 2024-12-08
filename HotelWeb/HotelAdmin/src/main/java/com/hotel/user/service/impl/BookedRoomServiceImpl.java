@@ -32,10 +32,9 @@ public class BookedRoomServiceImpl implements BookedRoomService {
         // Chuyển đổi từng phần tử từ Booked_room sang BookedRoomDTO
         return bookedRoomsPage.map(bookedRoom -> {
             // Tính số ngày đã ở
-            long daysStayed = ChronoUnit.DAYS.between(
-                    bookedRoom.getCheckinDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                    bookedRoom.getCheckoutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-            );
+
+            long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
+            long daysStayed = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
             BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
