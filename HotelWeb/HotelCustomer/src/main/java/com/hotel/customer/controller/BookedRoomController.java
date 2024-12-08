@@ -2,9 +2,11 @@ package com.hotel.customer.controller;
 
 
 import com.hotel.common.entity.Booked_room;
+import com.hotel.common.entity.Customer;
 import com.hotel.customer.model.dto.request.BookRoomRequest;
 import com.hotel.customer.model.dto.response.HistoryBooking;
 import com.hotel.customer.service.BookedRoomService;
+import com.hotel.customer.service.CustomerService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,16 @@ import java.util.List;
 public class BookedRoomController {
     @Autowired
     private BookedRoomService bookedRoomService;
-
-
+    @Autowired
+    private CustomerService customerService;
 
     @PostMapping("/book")
     public ResponseEntity<?> bookRoom(@RequestBody BookRoomRequest request) {
+        Customer customer = customerService.getCustomer(request.getEmail());
         try {
             Booked_room bookedRoom = bookedRoomService.bookRoom(
                     request.getRoomId(),
-                    request.getCustomerId(),
+                    customer.getId(),
                     request.getCheckinDate(),
                     request.getCheckoutDate()
             );
@@ -41,9 +44,10 @@ public class BookedRoomController {
                     .body("Lỗi khi đặt phòng: " + e.getMessage());
         }
     }
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<List<HistoryBooking>> getBookingHistory(@PathVariable Long userId) {
-        List<HistoryBooking> history = bookedRoomService.getHistoryByUserId(userId);
+    @GetMapping("/history/{email}")
+    public ResponseEntity<List<HistoryBooking>> getBookingHistory(@PathVariable String email) {
+        Customer customer = customerService.getCustomer(email);
+        List<HistoryBooking> history = bookedRoomService.getHistoryByUserId(customer.getId());
         return ResponseEntity.ok(history);
     }
 }

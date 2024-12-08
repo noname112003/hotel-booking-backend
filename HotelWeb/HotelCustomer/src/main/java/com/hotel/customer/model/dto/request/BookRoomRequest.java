@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class BookRoomRequest {
     private Long roomId;
-    private Long customerId;
+    private String email;
     private Date checkinDate;
     private Date checkoutDate;
 }

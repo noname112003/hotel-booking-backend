@@ -150,6 +150,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             return HistoryBooking.builder()
                     .nameHotel(bookedRoom.getRoom().getHotel().getName())
                     .roomType(bookedRoom.getRoom().getRoomType())
+                    .number(bookedRoom.getRoom().getNumber())
                     .checkinDate(bookedRoom.getCheckinDate())
                     .checkoutDate(bookedRoom.getCheckoutDate())
                     .bookingDate(bookedRoom.getBookingDate())

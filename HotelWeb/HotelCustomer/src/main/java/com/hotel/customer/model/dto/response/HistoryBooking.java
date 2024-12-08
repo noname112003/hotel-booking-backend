@@ -15,6 +15,7 @@ import java.util.Date;
 @Builder
 public class HistoryBooking {
     private String nameHotel;
+    private Long number;
     private String roomType;
     private Date checkinDate;
     private Date checkoutDate;
