@@ -1,5 +1,4 @@
-package com.hotel.customer.model.dto.response;
-
+package com.hotel.user.model.dto.reponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,18 +8,17 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class HistoryBooking {
+public class BookedRoomDTO {
     private Long id;
-    private String nameHotel;
-    private Long number;
-    private String roomType;
+    private String hotelName;
+    private String roomName; // Tên phòng
+    private String customerName; // Tên khách hàng
     private Date checkinDate;
     private Date checkoutDate;
     private Date bookingDate;
     private BigDecimal totalCost;
-
 }
