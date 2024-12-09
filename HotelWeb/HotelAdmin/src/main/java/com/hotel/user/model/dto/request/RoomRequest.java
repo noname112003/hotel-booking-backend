@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,6 +16,6 @@ public class RoomRequest {
     private Long number;
     private String roomType;
     private String description;
-    private double price;
+    private BigDecimal price;
     private List<String> paths;
 }
