@@ -4,6 +4,7 @@ package com.hotel.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -22,7 +23,7 @@ public class Room {
 
     private String description;
 
-    private double price;
+    private BigDecimal price;
 
     private Long number;
 

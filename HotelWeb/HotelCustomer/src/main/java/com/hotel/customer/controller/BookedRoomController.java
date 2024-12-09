@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -48,6 +49,7 @@ public class BookedRoomController {
     public ResponseEntity<List<HistoryBooking>> getBookingHistory(@PathVariable String email) {
         Customer customer = customerService.getCustomer(email);
         List<HistoryBooking> history = bookedRoomService.getHistoryByUserId(customer.getId());
+        history.sort(Comparator.comparing(HistoryBooking::getBookingDate));
         return ResponseEntity.ok(history);
     }
 }
