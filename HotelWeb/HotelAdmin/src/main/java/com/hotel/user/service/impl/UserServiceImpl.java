@@ -6,6 +6,7 @@ import com.hotel.user.exception.UserAlreadyExistsException;
 import com.hotel.user.model.dto.reponse.UserResponse;
 import com.hotel.user.model.dto.request.UserRequest;
 
+import com.hotel.user.model.dto.request.command.UpdateAdminCommand;
 import com.hotel.user.repository.RoleRepository;
 import com.hotel.user.repository.UserRepository;
 import com.hotel.user.security.jwt.JwtProvider;
@@ -129,5 +130,17 @@ public class UserServiceImpl implements UserService {
             return userDetails.getUsername(); // Email hoặc username của người dùng
         }
         throw new IllegalStateException("No logged-in user found");
+    }
+
+    @Override
+    public void updateUser(UpdateAdminCommand command) {
+        // Kiểm tra xem customer có tồn tại không
+        if (userRepository.existsByEmail(command.getEmail())) {
+            // Nếu tồn tại, thực hiện cập nhật
+            userRepository.updateAdminByEmail(command.getName(), command.getPhoneNumber(),
+                    command.getEmail());
+        } else {
+            throw new UsernameNotFoundException("Customer with email does not exist.");
+        }
     }
 }

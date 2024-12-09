@@ -145,19 +145,18 @@ public class BookedRoomServiceImpl implements BookedRoomService {
 
         return bookedRooms.stream().map(bookedRoom -> {
             // Tính số ngày đã ở
-            long daysStayed = ChronoUnit.DAYS.between(
-                    bookedRoom.getCheckinDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                    bookedRoom.getCheckoutDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-            );
+            long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
+            long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
-            BigDecimal totalCost = bookedRoom.getRoom().getPrice()
-                    .multiply(BigDecimal.valueOf(daysStayed));
+            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(numberOfDays));
 
             return HistoryBooking.builder()
                     .id(bookedRoom.getId())
                     .nameHotel(bookedRoom.getRoom().getHotel().getName())
                     .roomType(bookedRoom.getRoom().getRoomType())
+                    .number(bookedRoom.getRoom().getNumber())
                     .checkinDate(bookedRoom.getCheckinDate())
                     .checkoutDate(bookedRoom.getCheckoutDate())
                     .bookingDate(bookedRoom.getBookingDate())
