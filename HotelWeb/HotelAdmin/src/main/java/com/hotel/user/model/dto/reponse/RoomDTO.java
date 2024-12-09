@@ -3,6 +3,7 @@ package com.hotel.user.model.dto.reponse;
 import com.hotel.common.entity.Room;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class RoomDTO {
     private Long number;
     private String roomType;
     private String description;
-    private double price;
+    private BigDecimal price;
     private Long hotelId;
     private String hotelName;
     private List<String> paths;

@@ -149,7 +149,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
-            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal roomPrice = bookedRoom.getRoom().getPrice();
             BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(numberOfDays));
 
             return HistoryBooking.builder()

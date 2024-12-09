@@ -39,7 +39,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             long daysStayed = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
-            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal roomPrice = bookedRoom.getRoom().getPrice();
             BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(daysStayed));
 
             return BookedRoomDTO.builder()
@@ -69,7 +69,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             long daysStayed = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
-            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal roomPrice = bookedRoom.getRoom().getPrice();
             BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(daysStayed));
 
             return BookedRoomDTO.builder()
@@ -98,7 +98,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
             long daysStayed = TimeUnit.MILLISECONDS.toDays(durationInMillis);
 
             // Tính tổng chi phí
-            BigDecimal roomPrice = BigDecimal.valueOf(bookedRoom.getRoom().getPrice());
+            BigDecimal roomPrice = bookedRoom.getRoom().getPrice();
             return roomPrice.multiply(BigDecimal.valueOf(daysStayed));
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
 
