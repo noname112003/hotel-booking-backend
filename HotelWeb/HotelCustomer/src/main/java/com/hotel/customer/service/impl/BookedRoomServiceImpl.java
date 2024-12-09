@@ -15,6 +15,8 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -140,10 +142,10 @@ public class BookedRoomServiceImpl implements BookedRoomService {
     }
 
     @Override
-    public List<HistoryBooking> getHistoryByUserId(Long userId) {
-        List<Booked_room> bookedRooms = bookedRoomRepository.findByCustomerId(userId);
+    public Page<HistoryBooking> getHistoryByUserId(Long userId, Pageable pageable) {
+        Page<Booked_room> bookedRooms = bookedRoomRepository.findByCustomerId(userId, pageable);
 
-        return bookedRooms.stream().map(bookedRoom -> {
+        return bookedRooms.map(bookedRoom -> {
             // Tính số ngày đã ở
             long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
             long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
@@ -162,7 +164,7 @@ public class BookedRoomServiceImpl implements BookedRoomService {
                     .bookingDate(bookedRoom.getBookingDate())
                     .totalCost(totalCost)
                     .build();
-        }).collect(Collectors.toList());
+        });
     }
 
 

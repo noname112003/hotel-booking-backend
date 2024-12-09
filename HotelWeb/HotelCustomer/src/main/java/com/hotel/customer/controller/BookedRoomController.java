@@ -10,6 +10,9 @@ import com.hotel.customer.service.CustomerService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +48,15 @@ public class BookedRoomController {
         }
     }
     @GetMapping("/history/{email}")
-    public ResponseEntity<List<HistoryBooking>> getBookingHistory(@PathVariable String email) {
+    public ResponseEntity<?> getBookingHistory(
+            @PathVariable String email,
+            @RequestParam(defaultValue = "0") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
         Customer customer = customerService.getCustomer(email);
-        List<HistoryBooking> history = bookedRoomService.getHistoryByUserId(customer.getId());
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<HistoryBooking> history = bookedRoomService.getHistoryByUserId(customer.getId(), pageable);
+
         return ResponseEntity.ok(history);
     }
 }
